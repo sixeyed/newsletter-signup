@@ -1,0 +1,22 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+
+init:
+- ps: >-
+    iwr -useb https://raw.githubusercontent.com/sixeyed/docker-init/master/windows/install-docker-ce_17.05.ps1 | iex;
+    iwr -useb https://raw.githubusercontent.com/sixeyed/docker-init/master/windows/install-docker-compose_1.13.ps1 | iex
+
+environment:
+  HUB_USER: 
+    secure: UcpCEwCebWK6U5TFkMN/UQ==
+  HUB_PASSWORD: 
+    secure: /TwHWZYikNlzMXCXAn4xsg==
+
+build_script:
+- ps: .\ci\01-build.ps1
+
+test_script:
+- ps: .\ci\02-run.ps1; .\ci\03-test.ps1
+
+deploy_script:
+- ps: .\ci\04-push.ps1

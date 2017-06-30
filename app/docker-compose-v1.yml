@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  
+  db:
+    image: microsoft/mssql-server-windows-express
+    ports:
+      - "1433"
+    environment: 
+      - ACCEPT_EULA=Y
+    env_file:
+      - db-credentials.env
+    networks:
+      - app-net
+
+  web:
+    image: sixeyed/signup-web:v1
+    ports:
+      - "80"
+    env_file:
+      - db-credentials.env
+    depends_on:
+      - db
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    external:
+      name: nat
