@@ -26,7 +26,7 @@ RUN Import-Module WebAdministration; `
                 -Port 80 -PhysicalPath 'C:\web-app' `
                 -ApplicationPool 'ap-signup'
 
-HEALTHCHECK --interval=5s `
+HEALTHCHECK --start-period=30s --interval=10s --retries=5 `
  CMD powershell -command `
     try { `
      $response = iwr http://localhost/SignUp -UseBasicParsing; `

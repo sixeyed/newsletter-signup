@@ -21,4 +21,13 @@ CMD .\SignUp.MessageHandlers.IndexProspect.exe
 ENV MESSAGE_QUEUE_URL="nats://message-queue:4222" `
     ELASTICSEARCH_URL="http://elasticsearch:9200"
 
+HEALTHCHECK --start-period=30s --interval=5s --retries=3 `
+ CMD powershell -command `
+    try { `
+     $content = (iwr -useb http://elasticsearch:9200/_cat/health).Content; `
+     $health = $content.Split(' ')[3]; `
+     if ($health -eq 'green' -or $health -eq 'yellow') { return 0 } `
+     else { return 1 }; `
+    } catch { return 1 }
+
 COPY --from=builder C:\out\index-prospect\IndexProspectHandler .
