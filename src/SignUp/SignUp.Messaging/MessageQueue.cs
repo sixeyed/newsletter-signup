@@ -1,4 +1,5 @@
-﻿using NATS.Client;
+﻿using System;
+using NATS.Client;
 using SignUp.Messaging.Messages;
 
 namespace SignUp.Messaging
@@ -18,14 +19,12 @@ namespace SignUp.Messaging
 
         public static IConnection CreateConnection()
         {
-            var factory = new ConnectionFactory();
-
-            var options = factory.GetDefaultOptions();
-            option.Url = Config.MessageQueueUrl;
+            var options = ConnectionFactory.GetDefaultOptions();
+            options.Url = Config.MessageQueueUrl;
             options.DisconnectedEventHandler += HandleDisconnect;
             options.AsyncErrorEventHandler += HandleError;
 
-            return factory.CreateConnection(options);
+            return new ConnectionFactory().CreateConnection(options);
         }
 
         private static void HandleDisconnect(object sender, ConnEventArgs e)

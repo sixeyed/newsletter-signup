@@ -26,13 +26,9 @@ RUN Import-Module WebAdministration; `
                 -Port 80 -PhysicalPath 'C:\web-app' `
                 -ApplicationPool 'ap-signup'
 
-HEALTHCHECK --start-period=30s --interval=10s --retries=5 `
- CMD powershell -command `
-    try { `
-     $response = iwr http://localhost/SignUp -UseBasicParsing; `
-     if ($response.StatusCode -eq 200) { return 0} `
-     else {return 1}; `
-    } catch { return 1 }
+COPY .\docker\web\healthcheck.ps1 .
+HEALTHCHECK --start-period=30s --interval=4s --retries=3 `
+ CMD powershell -command .\healthcheck.ps1
 
 ENV MESSAGE_QUEUE_URL="nats://message-queue:4222" `
     DB_CONNECTION_STRING_PATH="C:\ProgramData\Docker\secrets\signup-db.connectionstring" `

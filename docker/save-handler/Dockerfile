@@ -23,4 +23,8 @@ ENV MESSAGE_QUEUE_URL="nats://message-queue:4222" `
     DB_MAX_RETRY_COUNT="5" `
     DB_MAX_DELAY_SECONDS="10"
 
+COPY .\docker\save-handler\healthcheck.ps1 .
+HEALTHCHECK --start-period=10s --interval=2s --retries=2 `
+ CMD powershell -command .\healthcheck.ps1
+
 COPY --from=builder C:\out\save-prospect\SaveProspectHandler .
